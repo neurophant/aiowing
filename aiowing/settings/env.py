@@ -10,10 +10,10 @@ TEMPLATES_PATH = path.join(BASE_PATH, 'templates')
 STATIC_PATH = path.join(BASE_PATH, 'static')
 STATIC_URL = '/static'
 
-DB_NAME = 'aiowing'
+DB_NAME = 'windseed'
 DB_MAX_CONNECTIONS = 8
-DB_USER = 'aiowing'
-DB_PASSWORD = 'aiowing'
+DB_USER = 'windseed'
+DB_PASSWORD = 'windseed'
 DB_HOST = 'localhost'
 DB_PORT = 5432
 

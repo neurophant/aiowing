@@ -18,33 +18,34 @@ class RecordsHandler(handler.Handler):
             page = 1
 
         try:
-            count = await db.manager.count(
-                Record
-                .select()
-                .where(Record.active == True))
-        except (psycopg2.OperationalError, peewee.IntegrityError,
-                peewee.ProgrammingError):
-            count = 0
-
-        page_count, prev_page, page, next_page = await self.paging(
-            page, count, env.RECORDS_PER_PAGE)
-
-        try:
             records = await db.manager.execute(
                 Record
                 .select()
                 .where(Record.active == True)
                 .order_by(Record.name.asc())
-                .paginate(
-                    page,
-                    paginate_by=env.RECORDS_PER_PAGE))
+                .offset((page-1)*env.RECORDS_PER_PAGE)
+                .limit(env.RECORDS_PER_PAGE+1))
         except (psycopg2.OperationalError, peewee.IntegrityError,
                 peewee.ProgrammingError):
             records = []
 
+        count = len(records)
+
+        if count == 0:
+            return web.HTTPFound(self.request.app.router['records'].url())
+
+        if count > env.RECORDS_PER_PAGE:
+            next_page = page + 1
+        else:
+            next_page = None
+
+        if page == 1:
+            prev_page = None
+        else:
+            prev_page = page - 1
+
         return dict(request=self.request,
-                    records=records,
-                    page_count=page_count,
+                    records=records[:env.RECORDS_PER_PAGE],
                     prev_page=prev_page,
                     page=page,
                     next_page=next_page)
