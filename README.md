@@ -35,7 +35,7 @@ This is a successor of [windseed](https://github.com/embali/windseed)
 - **bash** - utility bash scripts
   - **tables.sh** - re-create aiowing database and tables
   - **records.sh** - re-create test records
-  - **aiowing.sh** - run application
+  - **aiowing.sh** - run application with Gunicorn
 
 - **static** - project static files, mainly Bootstrap 3, robots.txt
 
