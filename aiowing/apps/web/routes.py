@@ -6,5 +6,5 @@ routes = (
 
     (('GET', r'/page/{page:([1-9]\d*)}/', RecordsHandler, ),
         {'name': 'records_page'}, ),
-    (('GET', r'/page/{page:(\d+)}', RecordsHandler, ),
+    (('GET', r'/page/{page:([1-9]\d*)}', RecordsHandler, ),
         {}, ), )
