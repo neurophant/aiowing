@@ -1,4 +1,4 @@
-from os import path
+from os import path, getenv
 
 
 DEBUG = True
@@ -10,11 +10,12 @@ TEMPLATES_PATH = path.join(BASE_PATH, 'templates')
 STATIC_PATH = path.join(BASE_PATH, 'static')
 STATIC_URL = '/static'
 
-DB_NAME = 'windseed'
+DB_NAME = getenv('AIOWING_DB_NAME')
 DB_MAX_CONNECTIONS = 8
-DB_USER = 'windseed'
-DB_PASSWORD = 'windseed'
+DB_USER = getenv('AIOWING_DB_USER')
+DB_PASSWORD = getenv('AIOWING_DB_PASSWORD')
 DB_HOST = 'localhost'
 DB_PORT = 5432
 
+RECORDS_COUNT = 10000
 RECORDS_PER_PAGE = 48

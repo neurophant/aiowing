@@ -26,10 +26,15 @@ This is a successor of [windseed](https://github.com/embali/windseed)
     - **db.py** - postgresql database pool
     - **env.py** - environment variables from env.sh and paths
     - **routes.py** - project routes
+  - **utils** - utility scripts
+    - **tables.py** - re-create aiowing tables
+    - **records.py** - re-create test records
 
 - **server.py** - aiowing application
 
 - **bash** - various bash scripts:
+  - **tables.sh** - re-create aiowing database and tables
+  - **records.sh** - re-create test records
   - **aiowing.sh** - run application
 
 - **static** - project static files, mainly Bootstrap 3, robots.txt
@@ -60,6 +65,10 @@ pip install -r requirements.txt
 ## Run
 
 ```
+bash bash/tables.sh - create tables
+
+bash bash/records.sh - create test records
+
 python server.py - run project (DEBUG=True)
 
 bash scripts/aiowing.sh - run project with Gunicorn (DEBUG=False)
