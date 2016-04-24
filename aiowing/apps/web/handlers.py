@@ -11,10 +11,7 @@ from aiowing.apps.web.models import Record
 class RecordsHandler(handler.Handler):
     @aiohttp_jinja2.template('web/records.html')
     async def get(self):
-        if 'page' in self.request.match_info:
-            page = int(self.request.match_info.get('page'))
-        else:
-            page = 1
+        page = int(self.request.match_info.get('page', 1))
 
         try:
             records = await db.manager.execute(
