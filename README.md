@@ -71,7 +71,7 @@ bash bash/records.sh - create test records
 
 python server.py - run project (DEBUG=True)
 
-bash scripts/aiowing.sh - run project with Gunicorn (DEBUG=False)
+bash bash/aiowing.sh - run project with Gunicorn (DEBUG=False)
 
 Open http://localhost:8080/
 ```
