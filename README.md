@@ -14,12 +14,12 @@ This is a successor of [windseed](https://github.com/embali/windseed)
 
 ## Structure
 
-- **aiowing** - aiowing package:
-  - **apps** - project's applications folder, each app within its folder has:
+- **aiowing** - aiowing package
+  - **apps** - project's applications folder, each app within its folder has
     - **handlers.py** - app handlers
     - **models.py** - app models
     - **routes.py** - app URLs and routes
-  - **base** - base classes:
+  - **base** - base classes
     - **handler.py** - base handler class
     - **model.py** - base model class
   - **settings** - project settings
@@ -32,7 +32,7 @@ This is a successor of [windseed](https://github.com/embali/windseed)
 
 - **server.py** - aiowing application
 
-- **bash** - various bash scripts:
+- **bash** - utility bash scripts
   - **tables.sh** - re-create aiowing database and tables
   - **records.sh** - re-create test records
   - **aiowing.sh** - run application
