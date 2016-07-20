@@ -1,0 +1,64 @@
+{% extends "admin/base.html" %}
+
+
+{% block content %}
+    {% include "admin/partials/_record_list.html" %}
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        function createRecord() {
+            $("#overlay").fadeIn(50);
+            $.ajax({
+                url: "{{ request.app.router['admin_records_post'].url() }}",
+                type: "POST",
+                data: $("#record").serialize() + "&create&page={{ page }}",
+                success: function(json) {
+                    if (json["status"] === "create"){
+                        $("#record-list").replaceWith(json["record_list"]);
+                    }
+                    $("#overlay").fadeOut(50);
+                },
+                error: function(xhr, errmsg, err) {
+                    $("#overlay").fadeOut(50);
+                }
+            });
+        };
+
+        function updateRecord(uid) {
+            $("#overlay").fadeIn(50);
+            $.ajax({
+                url: "{{ request.app.router['admin_records_post'].url() }}",
+                type: "POST",
+                data: $("#record-"+uid).serialize() + "&update&page={{ page }}",
+                success: function(json) {
+                    if (json["status"] === "update") {
+                        $("#record-list").replaceWith(json["record_list"]);
+                    }
+                    $("#overlay").fadeOut(50);
+                },
+                error: function(xhr, errmsg, err) {
+                    $("#overlay").fadeOut(50);
+                }
+            });
+        };
+
+        function deleteRecord(uid) {
+            $("#overlay").fadeIn(50);
+            $.ajax({
+                url: "{{ request.app.router['admin_records_post'].url() }}",
+                type: "POST",
+                data: $("#record-"+uid).serialize() + "&delete&page={{ page }}",
+                success: function(json) {
+                    if (json["status"] === "delete") {
+                        $("#record-list").replaceWith(json["record_list"]);
+                    }
+                    $("#overlay").fadeOut(50);
+                },
+                error: function(xhr, errmsg, err) {
+                    $("#overlay").fadeOut(50);
+                }
+            });
+        };
+    </script>
+{% endblock %}

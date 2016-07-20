@@ -1,3 +1,6 @@
 export AIOWING_DB_NAME="aiowing"
 export AIOWING_DB_USER="aiowing"
 export AIOWING_DB_PASSWORD="aiowing"
+export AIOWING_COOKIE_SECRET="n7kpCxa-GfD2ZS1soHOXvzwEu6yw6BAiG057GvVPzvw="
+export AIOWING_SUPERUSER_EMAIL="aiowing@aiowing.com"
+export AIOWING_SUPERUSER_PASSWORD="aiowing"

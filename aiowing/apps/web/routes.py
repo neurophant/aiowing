@@ -1,10 +1,8 @@
-from aiowing.apps.web.handlers import RecordsHandler
+from aiowing.base.route import get
+from aiowing.apps.web.handlers import Records
 
 
 routes = (
-    (('GET', r'/', RecordsHandler, ), {'name': 'records'}, ),
-
-    (('GET', r'/page/{page:([1-9]\d*)}/', RecordsHandler, ),
-        {'name': 'records_page'}, ),
-    (('GET', r'/page/{page:([1-9]\d*)}', RecordsHandler, ),
-        {}, ), )
+    get(r'/', Records, 'records'),
+    get(r'/{page:([1-9]\d*)}/', Records, 'records_page'),
+    get(r'/{page:([1-9]\d*)}', Records), )

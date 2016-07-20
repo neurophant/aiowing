@@ -1,0 +1,20 @@
+.search-form {
+    margin: none;
+    padding: none;    
+}
+
+.h1-20 {
+    font-size: 20px;
+}
+
+.span-gray {
+    font-size: 10px;
+    color: gray;
+}
+
+.h2-18 {
+    margin-top: 0px;
+    margin-bottom: 40px;
+    font-size: 18px;
+    color: white;
+}

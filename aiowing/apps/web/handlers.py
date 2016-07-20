@@ -8,7 +8,7 @@ from aiowing.base import handler
 from aiowing.apps.web.models import Record
 
 
-class RecordsHandler(handler.Handler):
+class Records(handler.Handler):
     @aiohttp_jinja2.template('web/records.html')
     async def get(self):
         page = int(self.request.match_info.get('page', 1))
