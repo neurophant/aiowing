@@ -18,4 +18,5 @@ class Record(model.Model):
 
     class Meta:
         indexes = (
-            (('active', 'name', ), True, ), )
+            (('active', 'name'), True),
+        )

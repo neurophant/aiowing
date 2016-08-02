@@ -35,24 +35,16 @@ class Handler(web.View):
 
         return email
 
-    async def paging(self, page, page_count):
-        if page > page_count:
-            page = page_count
+    async def paging(self, count, per_page, page):
+        page_count = int(count / per_page) + int(bool(count % per_page))
 
-        if page < 1:
-            page = 1
+        if page > page_count or page < 1:
+            return None, None, None
 
-        if page > 1:
-            prev_page = page - 1
-        else:
-            prev_page = None
+        prev_page = page - 1 if page > 1 else None
+        next_page = page + 1 if page < page_count else None
 
-        if page < page_count:
-            next_page = page + 1
-        else:
-            next_page = None
-
-        return prev_page, page, next_page
+        return page_count, prev_page, page, next_page
 
     async def ajax_empty(self, status):
         return web.json_response(dict(status=status))

@@ -86,30 +86,29 @@ class Logout(Handler):
 
 class Records(Handler):
     async def get_page_context(self, page):
-        with db.manager.allow_sync():
-            try:
-                count = peewee.SelectQuery(Record).count()
-            except peewee.IntegrityError:
-                count = 0
+        try:
+            count = await db.manager.count(Record.select())
+        except (psycopg2.OperationalError, peewee.IntegrityError,
+                peewee.ProgrammingError):
+            count = 0
 
-        page_count = int(count / env.RECORDS_PER_PAGE) + \
-            int(bool(count % env.RECORDS_PER_PAGE))
-        prev_page, page, next_page = await self.paging(page, page_count)
+        page_count, prev_page, page, next_page = \
+            await self.paging(count, env.RECORDS_PER_PAGE, page)
 
-        with db.manager.allow_sync():
-            try:
-                records = Record\
-                    .select()\
-                    .order_by(
-                        Record.active.desc(),
-                        Record.uts.desc())\
-                    .paginate(page, paginate_by=env.RECORDS_PER_PAGE)
-                records = list(records)
-            except peewee.IntegrityError:
-                records = []
+        try:
+            records = await db.manager.execute(
+                Record
+                .select()
+                .order_by(
+                    Record.active.desc(),
+                    Record.uts.desc())
+                .paginate(page, paginate_by=env.RECORDS_PER_PAGE))
+        except (psycopg2.OperationalError, peewee.IntegrityError,
+                peewee.ProgrammingError):
+            records = []
 
         return dict(request=self.request,
-                    current_user=await self.get_current_user(),
+                    current_user=(await self.get_current_user()),
                     records=records,
                     count=count,
                     page_count=page_count,

@@ -8,4 +8,5 @@ routes = (
     get(r'/admin/logout/', Logout, 'admin_logout'),
 
     get(r'/admin/', Records, 'admin_records'),
-    post(r'/admin/', Records, 'admin_records_post'), )
+    post(r'/admin/', Records, 'admin_records_post'),
+)
