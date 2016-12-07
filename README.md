@@ -14,10 +14,10 @@ This is a successor of [windseed](https://github.com/embali/windseed)
     - **model.py** - base model class
     - **route.py** - route get and post helpers
   - **apps** - project applications folder, each app within its folder has
+    - **tests** - tests folder
     - **handlers.py** - app handlers
     - **models.py** - app models
     - **routes.py** - app URLs and routes
-    - **tests** - tests folder
   - **utils** - utility scripts
     - **tables.py** - re-create aiowing tables
     - **records.py** - re-create test records
@@ -67,7 +67,7 @@ python -m aiowing.utils.records - create test records
 
 python server.py 8080 - run project
 
-Open http://localhost:8080/
+Open http://127.0.0.1:8080/
 ```
 
 
