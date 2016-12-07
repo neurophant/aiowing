@@ -3,15 +3,14 @@ import peewee
 from aiohttp import web
 from aiohttp_session import get_session
 
-from aiowing.settings import db
+from aiowing import settings
 from aiowing.apps.admin.models import User
 
 
 class Handler(web.View):
     async def get_current_user(self):
-        """
-        Current user
-        """
+        """Current user"""
+
         session = await get_session(self.request)
         email = session.get('email', None)
 
@@ -19,7 +18,7 @@ class Handler(web.View):
             return None
 
         try:
-            user = await db.manager.get(
+            user = await settings.manager.get(
                 User
                 .select()
                 .where(User.email == email))

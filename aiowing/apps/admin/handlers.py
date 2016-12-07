@@ -6,7 +6,7 @@ from aiohttp_session import get_session
 from aiohttp import web
 import aiohttp_jinja2
 
-from aiowing.settings import env, db
+from aiowing import settings
 from aiowing.base.handler import Handler
 from aiowing.apps.admin.models import User
 from aiowing.apps.web.models import Record
@@ -55,7 +55,7 @@ class Login(Handler):
         if email is None or password is None:
             return web.HTTPFound(self.request.app.router['admin_login'].url())
 
-        with db.manager.allow_sync():
+        with settings.manager.allow_sync():
             try:
                 user = User.get(User.email == email)
             except User.DoesNotExist:
@@ -87,22 +87,22 @@ class Logout(Handler):
 class Records(Handler):
     async def get_page_context(self, page):
         try:
-            count = await db.manager.count(Record.select())
+            count = await settings.manager.count(Record.select())
         except (psycopg2.OperationalError, peewee.IntegrityError,
                 peewee.ProgrammingError):
             count = 0
 
         page_count, prev_page, page, next_page = \
-            await self.paging(count, env.RECORDS_PER_PAGE, page)
+            await self.paging(count, settings.RECORDS_PER_PAGE, page)
 
         try:
-            records = await db.manager.execute(
+            records = await settings.manager.execute(
                 Record
                 .select()
                 .order_by(
                     Record.active.desc(),
                     Record.uts.desc())
-                .paginate(page, paginate_by=env.RECORDS_PER_PAGE))
+                .paginate(page, paginate_by=settings.RECORDS_PER_PAGE))
         except (psycopg2.OperationalError, peewee.IntegrityError,
                 peewee.ProgrammingError):
             records = []
@@ -162,9 +162,9 @@ class Records(Handler):
         if create is not None and \
                 active is not None and \
                 name is not None:
-            with db.manager.allow_sync():
+            with settings.manager.allow_sync():
                 try:
-                    with db.pool.atomic():
+                    with settings.pool.atomic():
                         created = Record.create(
                             active=active,
                             name=name,
@@ -182,9 +182,9 @@ class Records(Handler):
                 uid is not None and \
                 active is not None and \
                 name is not None:
-            with db.manager.allow_sync():
+            with settings.manager.allow_sync():
                 try:
-                    with db.pool.atomic():
+                    with settings.pool.atomic():
                         updated = Record\
                             .update(
                                 active=active,
@@ -203,9 +203,9 @@ class Records(Handler):
             return response
         elif delete is not None and \
                 uid is not None:
-            with db.manager.allow_sync():
+            with settings.manager.allow_sync():
                 try:
-                    with db.pool.atomic():
+                    with settings.pool.atomic():
                         deleted = Record\
                             .delete()\
                             .where(Record.uid == uid)\

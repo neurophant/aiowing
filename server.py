@@ -4,21 +4,21 @@ import jinja2
 from aiohttp_session.cookie_storage import EncryptedCookieStorage
 from aiohttp_session import session_middleware
 
-from aiowing.settings import env
-from aiowing.settings.routes import routes
+from aiowing import settings, routes
 from aiowing.base.middleware import error_middleware
 
 
 app = web.Application(middlewares=[
-    session_middleware(EncryptedCookieStorage(env.COOKIE_SECRET)),
+    session_middleware(EncryptedCookieStorage(settings.COOKIE_SECRET)),
     error_middleware])
-aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader(env.TEMPLATES_PATH))
+aiohttp_jinja2.setup(app,
+                     loader=jinja2.FileSystemLoader(settings.TEMPLATES_PATH))
 
-for route in routes:
+for route in routes.routes:
     app.router.add_route(*route[0], **route[1])
 
-if env.DEBUG:
-    app.router.add_static(env.STATIC_URL, env.STATIC_PATH)
+if settings.DEBUG:
+    app.router.add_static(settings.STATIC_URL, settings.STATIC_PATH)
 
-if env.DEBUG:
+if settings.DEBUG:
     web.run_app(app)

@@ -1,13 +1,12 @@
-from aiowing.settings import env
-from aiowing.settings.db import pool, manager
+from aiowing import settings
 from aiowing.apps.web.models import Record
 
 
-with manager.allow_sync():
+with settings.manager.allow_sync():
     Record.delete().execute()
 
     records = []
-    for index in range(env.RECORDS_COUNT):
+    for index in range(settings.RECORDS_COUNT):
         if index % 2 == 0:
             active = True
         else:
@@ -17,5 +16,5 @@ with manager.allow_sync():
             name='record %d' % index,
             description='description %d' % index))
 
-    with pool.atomic():
+    with settings.atomic():
         Record.insert_many(records).execute()
