@@ -48,5 +48,4 @@ def get_manager(pool_, loop_):
 
 loop = asyncio.get_event_loop()
 pool = get_pool()
-
 manager = get_manager(pool, loop)

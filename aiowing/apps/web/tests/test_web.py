@@ -1,4 +1,4 @@
-async def test_200(test_app, test_client):
+async def test_records(test_app, test_client):
     cli = await test_client(test_app)
     resp = await cli.get(test_app.router['web_records'].url(),
                          allow_redirects=False)
@@ -6,7 +6,7 @@ async def test_200(test_app, test_client):
     await resp.release()
 
 
-async def test_404(test_app, test_client):
+async def test_records_not_fount(test_app, test_client):
     cli = await test_client(test_app)
     resp = await cli.get(
         test_app.router['web_records_page'].url(parts={'page': 0}),
