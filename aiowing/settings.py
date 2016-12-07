@@ -29,15 +29,24 @@ RECORDS_COUNT = 1000
 RECORDS_PER_PAGE = 12
 
 
+def get_pool():
+    return PooledPostgresqlDatabase(
+        DB_NAME,
+        max_connections=DB_MAX_CONNECTIONS,
+        user=DB_USER,
+        password=DB_PASSWORD,
+        host=DB_HOST,
+        port=DB_PORT)
+
+
+def get_manager(pool_, loop_):
+    manager_ = Manager(pool_, loop=loop_)
+    manager_.database.allow_sync = False
+
+    return manager_
+
+
 loop = asyncio.get_event_loop()
+pool = get_pool()
 
-pool = PooledPostgresqlDatabase(
-    DB_NAME,
-    max_connections=DB_MAX_CONNECTIONS,
-    user=DB_USER,
-    password=DB_PASSWORD,
-    host=DB_HOST,
-    port=DB_PORT)
-
-manager = Manager(pool, loop=loop)
-manager.database.allow_sync = False
+manager = get_manager(pool, loop)
