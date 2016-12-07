@@ -42,37 +42,32 @@ class Login(Handler):
     @unauthenticated
     @aiohttp_jinja2.template('admin/login.html')
     async def get(self):
-        return dict(
-            request=self.request,
-            current_user=await self.get_current_user())
+        return {'request': self.request,
+                'current_user': await self.get_current_user()}
 
     @unauthenticated
     async def post(self):
         await self.request.post()
-        email = self.request.POST.get('email', None)
-        password = self.request.POST.get('password', None)
+        email = self.request.POST.get('email')
+        password = self.request.POST.get('password')
 
-        if email is None or password is None:
+        if not all((email, password)):
             return web.HTTPFound(self.request.app.router['admin_login'].url())
 
-        with settings.manager.allow_sync():
-            try:
-                user = User.get(User.email == email)
-            except User.DoesNotExist:
-                user = None
-
-        if user:
-            if user.active and user.superuser and \
-                    user.check_password(password=password):
-                session = await get_session(self.request)
-                session['email'] = user.email
-                return web.HTTPFound(
-                    self.request.app.router['admin_records'].url())
-            else:
-                return web.HTTPFound(
-                    self.request.app.router['admin_login'].url())
-        else:
+        try:
+            user = await settings.manager.get(User, email=email)
+        except User.DoesNotExist:
             return web.HTTPFound(self.request.app.router['admin_login'].url())
+
+        if not all((user.active,
+                    user.superuser,
+                    await user.check_password(password=password))):
+            return web.HTTPFound(self.request.app.router['admin_login'].url())
+
+        session = await get_session(self.request)
+        session['email'] = user.email
+
+        return web.HTTPFound(self.request.app.router['admin_records'].url())
 
 
 class Logout(Handler):
@@ -107,118 +102,87 @@ class Records(Handler):
                 peewee.ProgrammingError):
             records = []
 
-        return dict(request=self.request,
-                    current_user=(await self.get_current_user()),
-                    records=records,
-                    count=count,
-                    page_count=page_count,
-                    prev_page=prev_page,
-                    page=page,
-                    next_page=next_page)
+        return {'request': self.request,
+                'current_user': (await self.get_current_user()),
+                'records': records,
+                'count': count,
+                'page_count': page_count,
+                'prev_page': prev_page,
+                'page': page,
+                'next_page': next_page}
 
     async def ajax_page(self, status, page):
         context = await self.get_page_context(page)
         record_list = aiohttp_jinja2.render_string(
             'admin/partials/_record_list.html', self.request, context)
 
-        return web.json_response(
-            dict(status=status, record_list=record_list))
+        return web.json_response({'status': status,
+                                  'record_list': record_list})
 
     @authenticated
     @aiohttp_jinja2.template('admin/records.html')
     async def get(self):
         try:
             page = int(self.request.GET.get('page', 1))
-        except ValueError:
+        except (ValueError, TypeError):
             page = 1
 
-        context = await self.get_page_context(page)
-
-        return context
+        return (await self.get_page_context(page))
 
     @authenticated
     async def post(self):
         await self.request.post()
 
-        create = self.request.POST.get('create', None)
-        update = self.request.POST.get('update', None)
-        delete = self.request.POST.get('delete', None)
+        create = self.request.POST.get('create') is not None
+        update = self.request.POST.get('update') is not None
+        delete = self.request.POST.get('delete') is not None
 
-        uid = self.request.POST.get('uid', None)
-        active = self.request.POST.get('active', None)
-        active = True if active is not None else False
-        name = self.request.POST.get('name', None)
-        if name is not None:
-            name = name.strip()
-            if not len(name) > 0:
-                name = None
-        description = self.request.POST.get('description', None)
+        uid = self.request.POST.get('uid')
+        active = True if self.request.POST.get('active') is not None else False
+        name = self.request.POST.get('name', '').strip()
+        description = self.request.POST.get('description')
 
         try:
             page = int(self.request.POST.get('page', 1))
-        except ValueError:
+        except (ValueError, TypeError):
             page = 1
 
-        if create is not None and \
-                active is not None and \
-                name is not None:
-            with settings.manager.allow_sync():
-                try:
-                    with settings.pool.atomic():
-                        created = Record.create(
+        if all((create, active, name)):
+            try:
+                async with settings.manager.atomic():
+                    created = await settings.manager.create(
+                        Record,
+                        active=active,
+                        name=name,
+                        description=description)
+            except peewee.IntegrityError:
+                return (await self.ajax_empty('not_created'))
+            else:
+                return (await self.ajax_page('create', page))
+        elif all((update, uid, active, name)):
+            try:
+                async with settings.manager.atomic():
+                    updated = await settings.manager.execute(
+                        Record
+                        .update(
                             active=active,
                             name=name,
                             description=description)
-                except peewee.IntegrityError:
-                    created = None
-
-            if created:
-                response = await self.ajax_page('create', page)
+                        .where(Record.uid == uid))
+            except peewee.IntegrityError:
+                return (await self.ajax_empty('not_updated'))
             else:
-                response = await self.ajax_empty('not_created')
-
-            return response
-        elif update is not None and \
-                uid is not None and \
-                active is not None and \
-                name is not None:
-            with settings.manager.allow_sync():
-                try:
-                    with settings.pool.atomic():
-                        updated = Record\
-                            .update(
-                                active=active,
-                                name=name,
-                                description=description)\
-                            .where(Record.uid == uid)\
-                            .execute()
-                except peewee.IntegrityError:
-                    updated = None
-
-            if updated:
-                response = await self.ajax_page('update', page)
+                return (await self.ajax_page('update', page))
+        elif all((delete, uid)):
+            try:
+                async with settings.manager.atomic():
+                    deleted = await settings.manager.execute(
+                        Record
+                        .delete()
+                        .where(Record.uid == uid))
+            except peewee.IntegrityError:
+                return (await self.ajax_empty('not_deleted'))
             else:
-                response = await self.ajax_empty('not_updated')
-
-            return response
-        elif delete is not None and \
-                uid is not None:
-            with settings.manager.allow_sync():
-                try:
-                    with settings.pool.atomic():
-                        deleted = Record\
-                            .delete()\
-                            .where(Record.uid == uid)\
-                            .execute()
-                except peewee.IntegrityError:
-                    deleted = None
-
-            if deleted:
-                response = await self.ajax_page('delete', page)
-            else:
-                response = await self.ajax_empty('not_deleted')
-
-            return response
+                return (await self.ajax_page('delete', page))
         else:
-            response = await self.ajax_empty('not_command')
-            return response
+            return (await self.ajax_empty('not_command'))

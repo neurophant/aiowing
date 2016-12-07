@@ -24,12 +24,9 @@ class Handler(web.View):
                 .where(User.email == email))
         except (User.DoesNotExist, psycopg2.OperationalError,
                 peewee.IntegrityError, peewee.ProgrammingError):
-            user = None
-
-        if user is None:
             return None
 
-        if not user.active or not user.superuser:
+        if not (user.active and user.superuser):
             return None
 
         return email

@@ -48,7 +48,7 @@ class User(Model):
 
         return super().save(*args, **kwargs)
 
-    def check_password(self, password=None):
+    async def check_password(self, password=None):
         """Check password"""
 
         return hmac.compare_digest(self.phash,

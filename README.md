@@ -24,23 +24,13 @@ This is a successor of [windseed](https://github.com/embali/windseed)
     - **middleware.py** - middlewares
     - **model.py** - base model class
     - **route.py** - route get and post helpers
-  - **settings** - project settings
-    - **db.py** - postgresql database pool
-    - **env.py** - environment variables from env.sh and paths
-    - **routes.py** - project routes
+  - **settings.py** - project settings
   - **utils** - utility scripts
     - **tables.py** - re-create aiowing tables
     - **records.py** - re-create test records
     - **superuser.py** - create superuser
 
 - **server.py** - aiowing application
-
-- **bash** - utility bash scripts
-  - **env.py** - environment variables: cookie secret, passwords, etc.
-  - **tables.sh** - re-create aiowing database and tables
-  - **records.sh** - re-create test records
-  - **aiowing.sh** - run application with Gunicorn
-  - **superuser.sh** - create superuser
 
 - **static** - project static files, mainly Bootstrap 3, robots.txt
 

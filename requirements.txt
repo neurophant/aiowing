@@ -1,12 +1,11 @@
 aiohttp==1.1.6
 aiohttp-jinja2==0.12.0
-aiohttp-session==0.7.1
-aiopg==0.10.0
+aiohttp-session==0.8.0
+aiopg==0.13.0
 async-timeout==1.1.0
-cffi==1.7.0
+cffi==1.9.1
 chardet==2.3.0
-cryptography==1.4
-gunicorn==19.6.0
+cryptography==1.6
 idna==2.1
 Jinja2==2.8
 MarkupSafe==0.23
@@ -15,7 +14,6 @@ peewee==2.8.5
 peewee-async==0.5.6
 psycopg2==2.6.2
 pyasn1==0.1.9
-pycparser==2.14
+pycparser==2.17
 six==1.10.0
-tasklocals==0.2
-yarl==0.7.1
+yarl==0.8.1
