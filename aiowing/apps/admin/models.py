@@ -16,8 +16,7 @@ class User(Model):
     phash = peewee.CharField(max_length=256)
 
     class Meta:
-        indexes = (
-            (('active', 'email', ), True, ), )
+        indexes = ((('active', 'email'), True), )
 
     @classmethod
     def create(cls, *args, **kwargs):

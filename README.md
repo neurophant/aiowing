@@ -25,10 +25,13 @@ This is a successor of [windseed](https://github.com/embali/windseed)
     - **model.py** - base model class
     - **route.py** - route get and post helpers
   - **settings.py** - project settings
+  - **routes.py** - project routes
   - **utils** - utility scripts
     - **tables.py** - re-create aiowing tables
     - **records.py** - re-create test records
     - **superuser.py** - create superuser
+
+- **env.sh** - environment variables (source env.sh)
 
 - **server.py** - aiowing application
 
@@ -60,13 +63,13 @@ pip install -r requirements.txt
 ## Run
 
 ```
-bash bash/tables.sh - create tables
+python -m aiowing.utils.tables - create tables
 
-bash bash/records.sh - create test records
+python -m aiowing.utils.superuser - create superuser
 
-python server.py - run project (DEBUG=True)
+python -m aiowing.utils.records - create test records
 
-bash bash/aiowing.sh - run project with Gunicorn (DEBUG=False)
+python server.py 8080 - run project
 
 Open http://localhost:8080/
 ```
