@@ -28,7 +28,7 @@ class Records(handler.Handler):
         count = len(records)
 
         if count == 0 and page != 1:
-            return web.HTTPFound(self.request.app.router['records'].url())
+            return web.HTTPFound(self.request.app.router['web_records'].url())
 
         next_page = page + 1 if count > settings.RECORDS_PER_PAGE else None
         prev_page = page - 1 if page != 1 else None
