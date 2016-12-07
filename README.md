@@ -5,31 +5,27 @@ Extendable skeleton for developing async web applications using [aiohttp](https:
 This is a successor of [windseed](https://github.com/embali/windseed)
 
 
-## Prerequisites
-
-- Ubuntu 14.10
-- PostgreSQL 9.3
-- Python 3.5+
-
-
 ## Structure
 
 - **aiowing** - aiowing package
-  - **apps** - project's applications folder, each app within its folder has
-    - **handlers.py** - app handlers
-    - **models.py** - app models
-    - **routes.py** - app URLs and routes
   - **base** - base classes
     - **handler.py** - base handler class
     - **middleware.py** - middlewares
     - **model.py** - base model class
     - **route.py** - route get and post helpers
-  - **settings.py** - project settings
-  - **routes.py** - project routes
+  - **apps** - project applications folder, each app within its folder has
+    - **handlers.py** - app handlers
+    - **models.py** - app models
+    - **routes.py** - app URLs and routes
+    - **tests** - tests folder
   - **utils** - utility scripts
     - **tables.py** - re-create aiowing tables
     - **records.py** - re-create test records
     - **superuser.py** - create superuser
+  - **settings.py** - project settings
+  - **routes.py** - project routes
+  - **application.py** - application definition
+  - **conftest.py** - common fixtures
 
 - **env.sh** - environment variables (source env.sh)
 
@@ -72,4 +68,10 @@ python -m aiowing.utils.records - create test records
 python server.py 8080 - run project
 
 Open http://localhost:8080/
+```
+
+
+## Run tests
+```
+py.test
 ```
